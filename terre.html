@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>three.js app</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<script src="https://threejs.org/build/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script>
+    // création du renderer
+    var renderer = new THREE.WebGLRenderer();
+    document.body.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // création de la caméra
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 1000);
+
+    // création de la scène
+    var scene = new THREE.Scene();
+
+    var orbit = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // couleur de fond blanc
+    scene.background = new THREE.Color(255, 255, 255);
+
+    //terre
+    materialterre = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/earth_color.jpg"), normalMap : new THREE.ImageUtils.loadTexture("images/earth_normal.jpg"), normalScale : new THREE.Vector3(2,3)});
+    materialterre.metalness = 0;
+    materialterre.roughness = 1;
+    //materialterre.wireframe = true;
+
+    //lune
+    materiallune = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/moon_1024.jpg")});
+    materiallune.metalness = 0;
+    materiallune.roughness = 1;
+
+    //clouds
+    cloudGeometry = new THREE.SphereGeometry(1.54,  128, 128);
+    cloudMaterial = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/earth_cloud.jpg")});
+    cloudMaterial.transparent = true;
+    cloudMaterial.opacity = 0.4;
+    cloudMaterial.metalness=  0;
+    cloudMaterial.roughness = 1;
+
+    var clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+    scene.add(clouds);
+
+    //starfield
+//    var starGeometry = new THREE.SphereGeometry(200, 20, 20);
+//    var starMaterial = new THREE.MeshPhongMaterial({
+//        map: new THREE.ImageUtils.loadTexture("images/test2.jpg"),
+//        side: THREE.DoubleSide,
+//        shininess: 0
+//    });
+//    var starField = new THREE.Mesh(starGeometry, starMaterial);
+//    scene.add(starField);
+
+    scene.background = new THREE.CubeTextureLoader()
+            .setPath( 'images/' )
+            .load( [
+                '1.jpg',
+                '2.jpg',
+                '3.jpg',
+                '4.jpg',
+                '5.jpg',
+                '6.jpg'
+            ] );
+
+    //light
+    var ambientLight = new THREE.AmbientLight(0xffffff, .6);
+    scene.add(ambientLight);
+
+    var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+    directionalLight.position.set(1, 0.5, 0.4);
+    scene.add(directionalLight);
+
+    //groups
+    var groupterre = new THREE.Group();
+    scene.add(groupterre);
+
+    var grouplune = new THREE.Group();
+    groupterre.add(grouplune);
+
+    var terre = new THREE.Mesh(new THREE.SphereGeometry(1.5, 128, 128), materialterre);
+    groupterre.add(terre);
+
+    var lune = new THREE.Mesh(new THREE.SphereGeometry(0.15, 64, 64), materiallune);
+    grouplune.add(lune);
+
+    //axes
+    //terre.add(new THREE.AxesHelper(2));
+    //lune.add(new THREE.AxesHelper(0.8));
+
+    // positionnement de la caméra
+    camera.position.z = 15;
+
+    renderer.shadowMap.enabled = true;
+    lune.lookAt(terre.position);
+    speedterre = .01;
+    speedlune = speedterre/15;
+
+
+    var curve = new THREE.CubicBezierCurve3(
+            new THREE.Vector3(-10,  0, 3),
+            new THREE.Vector3( -5, 15, 2),
+            new THREE.Vector3( 20, 15, 1),
+            new THREE.Vector3( 10,  0, 0)
+    );
+
+    var points = curve.getPoints(40);
+    var geometry = new THREE.BufferGeometry().setFromPoints(points);
+    var material = new THREE.LineBasicMaterial();
+    var curveObject = new THREE.Line(geometry, material);
+    scene.add(curveObject);
+
+    function animate() {
+        terre.rotateY(speedterre);
+        clouds.rotateY(.006);
+        lune.rotateY(speedlune);
+        lune.position.set(0, 0, 0);
+        lune.translateX(5.5);
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+
+
+
+    var renderer = new THREE.WebGLRenderer();
+    document.body.appendChild(renderer.domElement);
+
+    var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.y = 2;
+    camera.position.z = 5;
+
+    function updateViewportSize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix()
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    window.addEventListener("resize", updateViewportSize);
+    updateViewportSize();
+
+    var scene = new THREE.Scene();
+
+    var cube = new THREE.Mesh(new THREE.BoxGeometry());
+    scene.add(cube);
+
+    var empty = new THREE.Object3D();
+    empty.position.x = .75;
+    empty.position.y = .75;
+    cube.add(empty);
+
+    function getPositionOnScreen(camera, object3d) {
+        var vector = object3d.getWorldPosition().project(camera);
+        // On passe des coordonnées dans le repère normalisé (NDC) aux
+        // coordonnées de l'écran
+        vector.x = Math.round((vector.x + 1) / 2 * window.innerWidth);
+        vector.y = Math.round(-(vector.y - 1) / 2 * window.innerHeight);
+
+        return vector;
+    }
+
+    // Création du contrôleur
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.autoRotate = true;
+    controls.minDistance = 2;
+    controls.maxDistance = 30;
+
+    function animate() {
+        // mise à jour du contrôleur
+        controls.update();
+
+        var pos = getPositionOnScreen(camera, empty);
+        panneau.style.left = pos.x + "px";
+        panneau.style.top = pos.y + "px";
+
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+
+</script>
+
+</body>
+</html>

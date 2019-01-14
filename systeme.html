@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8>
+    <title>Système Solaire</title>
+    <link rel="icon" href="images/earth-png.png" />
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        .panneau {
+            position: absolute;
+            z-index: 10;
+            max-width: 25em;
+            background-color: white;
+            padding: 12px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://threejs.org/build/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<div id="idsoleil" class="panneau" style="display: none">
+    Soleil
+</div>
+<div id="idmercure" class="panneau" style="display: none">
+    Mercure
+</div>
+<div id="idvenus" class="panneau" style="display: none">
+    Venus
+</div>
+<div id="idterre" class="panneau" style="display: none">
+    Terre
+</div>
+<div id="idlune" class="panneau" style="display: none">
+    Lune
+</div>
+<div id="idmars" class="panneau" style="display: none">
+    Mars
+</div>
+<div id="idjupiter" class="panneau" style="display: none">
+    Jupiter
+</div>
+<div id="idsaturne" class="panneau" style="display: none">
+    Saturne
+</div>
+<script>
+    // création du renderer
+    var renderer = new THREE.WebGLRenderer();
+    document.body.appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // création de la caméra
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 1000);
+
+    // création de la scène
+    var scene = new THREE.Scene();
+    var orbit = new THREE.OrbitControls(camera, renderer.domElement);
+    orbit.maxDistance = 450;
+
+    // couleur de fond noir
+    scene.background = new THREE.Color(0, 0, 0);
+
+    //light
+    var ambientLight = new THREE.AmbientLight(0xffffff, .95);
+    scene.add(ambientLight);
+
+    var light = new THREE.PointLight( 0xfffff, 1.5, 100 );
+    light.position.set( 0, 0, 0 );
+    scene.add( light );
+
+
+    //groups
+    var groupsoleil = new THREE.Group();
+    scene.add(groupsoleil);
+    var groupmercure = new THREE.Group();
+    scene.add(groupmercure);
+    var groupvenus = new THREE.Group();
+    scene.add(groupvenus);
+    var groupterre = new THREE.Group();
+    scene.add(groupterre);
+    var grouplune = new THREE.Group();
+    groupterre.add(grouplune);
+    var groupmars = new THREE.Group();
+    scene.add(groupmars);
+    var groupjupiter = new THREE.Group();
+    scene.add(groupjupiter);
+    var groupsaturne = new THREE.Group();
+    scene.add(groupsaturne);
+
+    var objects = [];
+    for(var i = 0;i<750;i++) {
+        var rand = Math.floor(Math.random() * (4 - 1 + 1) + 1);
+        if(rand == 1) {
+            material = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/3215.jpg")});
+        } else if(rand == 2) {
+            material = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/3214.jpg")});
+        } else if(rand == 3) {
+            material = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/3216.jpg")});
+        } else {
+            material = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/moon.jpg")});
+        }
+        material.metalness = 0;
+        material.roughness = 1;
+        var sphere = new THREE.Mesh(new THREE.SphereGeometry(Math.random() * (.4 - .08) + .08, Math.floor(Math.random() * (10 - 4 + 1) + 4), Math.floor(Math.random() * (12 - 6 + 1) + 6)), material);
+        groupsoleil.add(sphere);
+        objects.push(sphere);
+    }
+
+    materialsoleil = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/8k_sun.jpg")});
+    materialsoleil.metalness = 0;
+    materialsoleil.roughness = 1;
+    var soleil = new THREE.Mesh(new THREE.SphereGeometry(12, 128, 128), materialsoleil);
+    soleil.name = 'idsoleil';
+
+    materialmercure = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/mercure.jpg")});
+    materialmercure.metalness = 0;
+    materialmercure.roughness = 1;
+    var mercure = new THREE.Mesh(new THREE.SphereGeometry(0.7, 128, 128), materialmercure);
+    mercure.name = 'idmercure';
+
+    materialvenus = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/8k_venus_atmosphere.jpg")});
+    materialvenus.metalness = 0;
+    materialvenus.roughness = 1;
+    var venus = new THREE.Mesh(new THREE.SphereGeometry(1.4, 128, 128), materialvenus);
+    venus.name = 'idvenus';
+
+    materialterre = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/earth_color.jpg"), normalMap : new THREE.ImageUtils.loadTexture("images/earth_normal.jpg"), normalScale : new THREE.Vector3(2,3)});
+    materialterre.metalness = 0;
+    materialterre.roughness = 1;
+    var terre = new THREE.Mesh(new THREE.SphereGeometry(1.45, 128, 128), materialterre);
+    terre.name = 'idterre';
+
+    materiallune = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/moon_1024.jpg")});
+    materiallune.metalness = 0;
+    materiallune.roughness = 1;
+    var lune = new THREE.Mesh(new THREE.SphereGeometry(0.2, 64, 64), materiallune);
+    lune.name = 'idlune';
+
+    materialmars = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/mars.jpg")});
+    materialmars.metalness = 0;
+    materialmars.roughness = 1;
+    var mars = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), materialmars);
+    mars.name = 'idmars';
+
+    materialjupiter = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/2k_jupiter.jpg")});
+    materialjupiter.metalness = 0;
+    materialjupiter.roughness = 1;
+    var jupiter = new THREE.Mesh(new THREE.SphereGeometry(5.2, 128, 128), materialjupiter);
+    jupiter.name = 'idjupiter';
+
+    materialsaturne = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/2k_saturn.jpg")});
+    materialsaturne.metalness = 0;
+    materialsaturne.roughness = 1;
+    var saturne = new THREE.Mesh(new THREE.SphereGeometry(4.3, 128, 128), materialsaturne);
+    saturne.name = 'idsaturne';
+
+    cloudGeometry = new THREE.SphereGeometry(1.53,  128, 128);
+    cloudMaterial = new THREE.MeshStandardMaterial({map: new THREE.ImageUtils.loadTexture("images/earth_cloud.jpg")});
+    cloudMaterial.transparent = true;
+    cloudMaterial.opacity = 0.15;
+    cloudMaterial.metalness=  0;
+    cloudMaterial.roughness = 1;
+    var clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+
+    var cloudsaturne = new THREE.Mesh(new THREE.RingGeometry(1.2 * 3.65, 2 * 3.25, 2 * 32, 5, 20, Math.PI * 2), new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture("images/beige.jpg"), side: THREE.DoubleSide, transparent: true, opacity:0.6 }));
+    cloudsaturne.rotation.x = Math.PI / 1.8;
+
+    groupsoleil.add(soleil);
+    groupmercure.add(mercure);
+    groupvenus.add(venus);
+    groupterre.add(terre);
+    groupterre.add(lune);
+    groupmars.add(mars);
+    groupjupiter.add(jupiter);
+    groupsaturne.add(saturne);
+    groupsoleil.add(groupmercure);
+    groupsoleil.add(groupvenus);
+    groupsoleil.add(groupterre);
+    groupsoleil.add(groupmars);
+    groupsoleil.add(groupjupiter);
+    groupsoleil.add(groupsaturne);
+    terre.add(clouds);
+    saturne.add(cloudsaturne);
+
+    //vitesse planètes
+    var speedterre = .02;
+    var speedlune = speedterre/3;
+    var speedm = .0018;
+    var speedv = .001;
+    var speedt = .0007;
+    var speedma = .00045;
+    var speedj = .00015;
+    var speeds = .00025;
+    var speedsoleil = .00012;
+
+    // positionnement de la caméra
+    camera.position.z = 160;
+    camera.position.y = 40;
+
+    //ciel étoilé
+    var starGeometry = new THREE.SphereGeometry(500, 60, 60);
+    var starMaterial = new THREE.MeshPhongMaterial({
+        map: new THREE.ImageUtils.loadTexture("images/8k_stars_2.jpg"),
+        side: THREE.DoubleSide,
+        shininess: 0
+    });
+    var starField = new THREE.Mesh(starGeometry, starMaterial);
+    scene.add(starField);
+    renderer.shadowMap.enabled = true;
+    lune.lookAt(terre.position);
+
+    //panneau planète
+    var raycaster = new THREE.Raycaster();
+
+    function getSelectionneLePlusProche(position) {
+        // Mise à jour de la position du rayon à lancer.
+        raycaster.setFromCamera(position, camera);
+        // Obtenir la liste des intersections
+        if (raycaster.intersectObject(soleil).length) {
+            return soleil;
+        }
+        if (raycaster.intersectObject(terre).length) {
+            return terre;
+        }
+        if (raycaster.intersectObject(mercure).length) {
+            return mercure;
+        }
+        if (raycaster.intersectObject(venus).length) {
+            return venus;
+        }
+        if (raycaster.intersectObject(mars).length) {
+            return mars;
+        }
+        if (raycaster.intersectObject(lune).length) {
+            return lune;
+        }
+        if (raycaster.intersectObject(jupiter).length) {
+            return jupiter;
+        }
+        if (raycaster.intersectObject(saturne).length) {
+            return saturne;
+        }
+    }
+
+    function updateViewportSize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function getPositionOnScreen(camera, object3d) {
+        var vector = object3d.getWorldPosition().project(camera);
+        vector.x = Math.round((vector.x + 1) / 2 * window.innerWidth);
+        vector.y = Math.round(-(vector.y - 1) / 2 * window.innerHeight);
+
+        return vector;
+    }
+
+    window.addEventListener("resize", updateViewportSize);
+    updateViewportSize();
+
+    function onMouseClick(event) {
+        var position = new THREE.Vector2();
+        var domRect = renderer.domElement.getBoundingClientRect();
+        position.x = (event.clientX / domRect.width) * 2 - 1 + domRect.left;
+        position.y = - (event.clientY / domRect.height) * 2 + 1 + domRect.top;
+
+        var s = getSelectionneLePlusProche(position);
+        if (s) {
+            idsoleil.style.display = "none";
+            idmercure.style.display = "none";
+            idvenus.style.display = "none";
+            idterre.style.display = "none";
+            idlune.style.display = "none";
+            idmars.style.display = "none";
+            idjupiter.style.display = "none";
+            idsaturne.style.display = "none";
+            var x = document.getElementById(s.name);
+            x.style.display = "block";
+        } else {
+            idsoleil.style.display = "none";
+            idmercure.style.display = "none";
+            idvenus.style.display = "none";
+            idterre.style.display = "none";
+            idlune.style.display = "none";
+            idmars.style.display = "none";
+            idjupiter.style.display = "none";
+            idsaturne.style.display = "none";
+        }
+    }
+
+    //accelerer le temps
+    function handleKeyDown(event) {
+        if (event.keyCode === 65) {
+            window.isBDown = true;
+        }
+        if (event.keyCode === 90) {
+            window.isVDown = true;
+        }
+    }
+
+    function handleKeyUp(event) {
+        if (event.keyCode === 65) {
+            window.isBDown = false;
+        }
+        if (event.keyCode === 90) {
+            window.isVDown = false;
+        }
+    }
+
+    //event listener
+    window.addEventListener('keydown', handleKeyDown, false);
+    window.addEventListener('keyup', handleKeyUp, false);
+    renderer.domElement.addEventListener('click', onMouseClick);
+
+    //asteroides
+    objects.forEach(function (item) {
+        item.position.set(0, Math.random() * (3 - (-1)) + (-1), 0);
+        item.rotateY(Math.random() * (20 - 5) + 5);
+        item.translateX(Math.floor(Math.random() * (110 - 72 + 1) + 72));
+
+    });
+
+    function animate() {
+        orbit.update();
+        objects.forEach(function (item, key) {
+            if(key%2 == 0) {
+                item.rotateX(Math.random() * (.004 - (.0003)) + (.0003));
+            } else if(key%3 == 0) {
+                item.rotateY(Math.random() * (.003 - (.0002)) + (.0002));
+            } else {
+                item.rotateZ(Math.random() * (.002 - (.0005)) + (.0005));
+            }
+
+        });
+
+        var pos0 = getPositionOnScreen(camera, soleil);
+        idsoleil.style.left = pos0.x + "px";
+        idsoleil.style.top = pos0.y + "px";
+        var pos1 = getPositionOnScreen(camera, terre);
+        idterre.style.left = pos1.x + "px";
+        idterre.style.top = pos1.y + "px";
+        var pos2 = getPositionOnScreen(camera, mercure);
+        idmercure.style.left = pos2.x + "px";
+        idmercure.style.top = pos2.y + "px";
+        var pos3 = getPositionOnScreen(camera, venus);
+        idvenus.style.left = pos3.x + "px";
+        idvenus.style.top = pos3.y + "px";
+        var pos4 = getPositionOnScreen(camera, lune);
+        idlune.style.left = pos4.x + "px";
+        idlune.style.top = pos4.y + "px";
+        var pos5 = getPositionOnScreen(camera, mars);
+        idmars.style.left = pos5.x + "px";
+        idmars.style.top = pos5.y + "px";
+        var pos6 = getPositionOnScreen(camera, jupiter);
+        idjupiter.style.left = pos6.x + "px";
+        idjupiter.style.top = pos6.y + "px";
+        var pos7 = getPositionOnScreen(camera, saturne);
+        idsaturne.style.left = pos7.x + "px";
+        idsaturne.style.top = pos7.y + "px";
+
+        soleil.rotateY(.0004);
+        groupsoleil.rotateY(speedsoleil);
+
+        groupmercure.position.set(0, 0, 0);
+        groupmercure.rotateY(speedm);
+        groupmercure.translateX(20);
+        mercure.rotateY(.003);
+
+        groupvenus.position.set(0, 0, 0);
+        groupvenus.rotateY(speedv);
+        groupvenus.translateX(28);
+        venus.rotateX(.002);
+
+        groupterre.position.set(0, 0, 0);
+        groupterre.rotateY(speedt);
+        groupterre.translateX(39);
+        terre.rotateY(speedterre);
+        clouds.rotateY(speedterre/2);
+
+        lune.position.set(0, 0, 0);
+        lune.rotateY(speedlune);
+        lune.translateX(3);
+
+        groupmars.position.set(0, 0, 0);
+        groupmars.rotateY(speedma);
+        groupmars.translateX(51);
+        mars.rotateY(speedterre*0.9);
+
+        groupjupiter.position.set(0, 0, 0);
+        groupjupiter.rotateY(speedj);
+        groupjupiter.translateX(140);
+        jupiter.rotateY(speedterre*.8);
+
+        groupsaturne.position.set(0, 0, 0);
+        groupsaturne.rotateY(speeds);
+        groupsaturne.translateX(190);
+        cloudsaturne.rotateZ(.0000001);
+
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(animate);
+        if (window.isBDown) {
+            speedm = speedm * 1.1;
+            speedv = speedv * 1.1;
+            speedt = speedt * 1.1;
+            speedma = speedma * 1.1;
+            speedj = speedj * 1.1;
+            speeds = speeds * 1.1;
+            speedsoleil = speedsoleil * 1.1;
+            speedlune = speedlune * 1.1;
+            groupmercure.rotateY(speedm);
+            groupvenus.rotateY(speedv);
+            groupterre.rotateY(speedt);
+            groupmars.rotateY(speedma);
+            groupjupiter.rotateY(speedj);
+            groupsaturne.rotateY(speeds);
+            groupsaturne.rotateY(speeds);
+            groupsoleil.rotateY(speedsoleil);
+            lune.rotateY(speedlune);
+        }
+        if (window.isVDown) {
+            speedm = speedm * .9;
+            speedv = speedv * .9;
+            speedt = speedt * .9;
+            speedma = speedma * .9;
+            speedj = speedj * .9;
+            speeds = speeds * .9;
+            speedsoleil = speedsoleil * .9;
+            speedlune = speedlune * .9;
+            groupmercure.rotateY(speedm);
+            groupvenus.rotateY(speedv);
+            groupterre.rotateY(speedt);
+            groupmars.rotateY(speedma);
+            groupjupiter.rotateY(speedj);
+            groupsaturne.rotateY(speeds);
+            groupsoleil.rotateY(speedsoleil);
+            lune.rotateY(speedlune);
+        }
+    }
+    requestAnimationFrame(animate);
+
+</script>
+    <div style="top:75px; left: 50px;" class="panneau" >A : accélerer <br /><br />Z : ralentir</div>
+</body>
+</html>
