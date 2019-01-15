@@ -408,8 +408,6 @@
     window.addEventListener("resize", updateViewportSize);
     updateViewportSize();
 
-    var zoomObject = false;
-
     function onMouseClick(event) {
         var position = new THREE.Vector2();
         var domRect = renderer.domElement.getBoundingClientRect();
@@ -495,8 +493,6 @@
     });
 
     function animate() {
-
-
         orbit.update();
         objects.forEach(function (item, key) {
             if(key%2 == 0) {

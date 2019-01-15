@@ -11,7 +11,7 @@
         }
         .panneau {
             position: absolute;
-            z-index: 10;
+            z-index: 15;
             max-width: 25em;
             background-color: white;
             padding: 12px;
@@ -23,6 +23,148 @@
 <script src="https://threejs.org/build/three.min.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/webVR.js"></script>
+<div id="idsoleil" class="panneau" style="display: none">
+    <h2>Soleil</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>695 508 km</td>
+        </tr>
+        <tr>
+            <td>Masse </td>
+            <td>1,989 × 10^30 kg</td>
+        </tr>
+        <tr>
+            <td>Distance terre/soleil</td>
+            <td>149,6 M km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>5504° </td>
+        </tr>
+        <tr>
+            <td>Âge</td>
+            <td>4,603 milliards ans</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>1,997 km/s</td>
+        </tr>
+    </table>
+</div>
+<div id="idmercure" class="panneau" style="display: none">
+    <h2>Mercure</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>2440 km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>57.91 M km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>-180° | 430°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>172' 800 km/h</td>
+        </tr>
+    </table>
+</div>
+<div id="idvenus" class="panneau" style="display: none">
+    <h2>Venus</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>6052 km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>108.2 M km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>462°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>126' 000 km/h</td>
+        </tr>
+    </table>
+</div>
+<div id="idterre" class="panneau" style="display: none">
+    <h2>Terre</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>6 371  km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>108.2 M km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>15°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>104' 400 km/h</td>
+        </tr>
+    </table>
+</div>
+<div id="idlune" class="panneau" style="display: none">
+    <h2>Lune</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>6 1 737   km</td>
+        </tr>
+        <tr>
+            <td>Distance de la terre</td>
+            <td>384 400 km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>-233° | 123°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>3 680 km/h</td>
+        </tr>
+    </table>
+</div>
+<div id="idmars" class="panneau" style="display: none">
+    <h2>Mars</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>3 390 km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>227,9 millions km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>-133° | 17°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>86’ 400 km/h</td>
+        </tr>
+    </table>
+</div>
+<div id="idjupiter" class="panneau" style="display: none">
+    Jupiter
+</div>
+<div id="idsaturne" class="panneau" style="display: none">
+    Saturne
+</div>
+<div class="panneau" id="btn" style="right: 75px; top: 75px;">> Entrer VR <</div>
+<div id="infos" style="top:75px; left: 50px;" class="panneau" >A : accélerer <br /><br />Z : ralentir<br /><br />Echap : quitter la vue</div>
 <script>
     // création du renderer
     var renderer = new THREE.WebGLRenderer();
@@ -276,18 +418,16 @@
 
     });
 
-    document.body.appendChild( WEBVR.createButton( renderer ) );
-    renderer.vr.enabled = true;
-
+    //courbe
     var numPoints = 100;
 
     spline = new THREE.SplineCurve3([
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 20, 10),
-        new THREE.Vector3(15, 15, 15),
-        new THREE.Vector3(15, 5, 20),
-        new THREE.Vector3(25, 10, 25),
-        new THREE.Vector3(25, 30, 30)
+        new THREE.Vector3(5, 5, 0),
+        new THREE.Vector3(0, 20, -10),
+        new THREE.Vector3(15, 15, -15),
+        new THREE.Vector3(-10, 10, -20),
+        new THREE.Vector3(20, 15, -30),
+        new THREE.Vector3(5, 5, 0)
     ]);
 
 
@@ -300,22 +440,180 @@
 
 //    var line = new THREE.Line(geometry);
 //    scene.add(line);
-    
-    var vitesse = .2;
 
+    var vitesse = .15;
     var start = null;
 
-    renderer.setAnimationLoop( function (t) {
+    //event listener
+    window.addEventListener('keydown', handleKeyDown, false);
+    window.addEventListener('keyup', handleKeyUp, false);
+    renderer.domElement.addEventListener('click', onMouseClick);
 
-//        groupcamera.position.set(0, 10, 0);
-//        groupcamera.rotateY(speedterre);
-//        groupcamera.translateX(5);
+    document.getElementById("btn").addEventListener("click", function(){
+        btn.style.display = "none";
+        infos.style.display = "none";
+        renderer.setAnimationLoop( function (t) {
+            document.body.appendChild( WEBVR.createButton( renderer ) );
+            renderer.vr.enabled = true;
 
-        if (start == null) {
-            start = t;
+            if (start == null) {
+                start = t;
+            }
+            var delai = t - start;
+            spline.getPoint((delai * vitesse * .0001) % 1, groupcamera.position);
+
+            soleil.rotateY(.0004);
+            groupsoleil.rotateY(speedsoleil);
+
+            groupmercure.position.set(0, 0, 0);
+            groupmercure.rotateY(speedm);
+            groupmercure.translateX(20);
+            mercure.rotateY(.003);
+
+            groupvenus.position.set(0, 0, 0);
+            groupvenus.rotateY(speedv);
+            groupvenus.translateX(28);
+            venus.rotateX(.002);
+
+            groupterre.position.set(0, 0, 0);
+            groupterre.rotateY(speedt);
+            groupterre.translateX(39);
+            terre.rotateY(speedterre);
+            clouds.rotateY(speedterre/2);
+
+            lune.position.set(0, 0, 0);
+            lune.rotateY(speedlune);
+            lune.translateX(3);
+
+            groupmars.position.set(0, 0, 0);
+            groupmars.rotateY(speedma);
+            groupmars.translateX(51);
+            mars.rotateY(speedterre*0.9);
+
+            groupjupiter.position.set(0, 0, 0);
+            groupjupiter.rotateY(speedj);
+            groupjupiter.translateX(140);
+            jupiter.rotateY(speedterre*.8);
+
+            groupsaturne.position.set(0, 0, 0);
+            groupsaturne.rotateY(speeds);
+            groupsaturne.translateX(190);
+            cloudsaturne.rotateZ(.0000001);
+
+            renderer.render(scene, camera);
+        });
+        return false;
+    });
+
+    //accelerer le temps
+    function handleKeyDown(event) {
+        if (event.keyCode === 65) {
+            window.isBDown = true;
         }
-        var delai = t - start;
-        spline.getPoint((delai * vitesse * .0001) % 1, groupcamera.position);
+        if (event.keyCode === 90) {
+            window.isVDown = true;
+        }
+        if (event.keyCode === 27) {
+            scene.add(camera);
+            camera.position.z = 160;
+            camera.position.y = 40;
+            idsoleil.style.display = "none";
+            idmercure.style.display = "none";
+            idvenus.style.display = "none";
+            idterre.style.display = "none";
+            idlune.style.display = "none";
+            idmars.style.display = "none";
+            idjupiter.style.display = "none";
+            idsaturne.style.display = "none";
+        }
+    }
+
+    function handleKeyUp(event) {
+        if (event.keyCode === 65) {
+            window.isBDown = false;
+        }
+        if (event.keyCode === 90) {
+            window.isVDown = false;
+        }
+    }
+
+    function onMouseClick(event) {
+        var position = new THREE.Vector2();
+        var domRect = renderer.domElement.getBoundingClientRect();
+        position.x = (event.clientX / domRect.width) * 2 - 1 + domRect.left;
+        position.y = - (event.clientY / domRect.height) * 2 + 1 + domRect.top;
+
+        var s = getSelectionneLePlusProche(position);
+        var g = getGroupSelectionneLePlusProche(position);
+        if (s) {
+            idsoleil.style.display = "none";
+            idmercure.style.display = "none";
+            idvenus.style.display = "none";
+            idterre.style.display = "none";
+            idlune.style.display = "none";
+            idmars.style.display = "none";
+            idjupiter.style.display = "none";
+            idsaturne.style.display = "none";
+            var x = document.getElementById(s.name);
+            g.add(camera);
+
+            camera.position.z = 0;
+            camera.position.x = 25;
+            camera.position.y = 1;
+
+            x.style.display = "block";
+        } else {
+            idsoleil.style.display = "none";
+            idmercure.style.display = "none";
+            idvenus.style.display = "none";
+            idterre.style.display = "none";
+            idlune.style.display = "none";
+            idmars.style.display = "none";
+            idjupiter.style.display = "none";
+            idsaturne.style.display = "none";
+        }
+    }
+
+    camera.position.z = 160;
+    camera.position.y = 40;
+
+    function animate() {
+        orbit.update();
+        objects.forEach(function (item, key) {
+            if(key%2 == 0) {
+                item.rotateX(Math.random() * (.004 - (.0003)) + (.0003));
+            } else if(key%3 == 0) {
+                item.rotateY(Math.random() * (.003 - (.0002)) + (.0002));
+            } else {
+                item.rotateZ(Math.random() * (.002 - (.0005)) + (.0005));
+            }
+
+        });
+
+        var pos0 = getPositionOnScreen(camera, soleil);
+        idsoleil.style.left = pos0.x + "px";
+        idsoleil.style.top = pos0.y + "px";
+        var pos1 = getPositionOnScreen(camera, terre);
+        idterre.style.left = pos1.x + "px";
+        idterre.style.top = pos1.y + "px";
+        var pos2 = getPositionOnScreen(camera, mercure);
+        idmercure.style.left = pos2.x + "px";
+        idmercure.style.top = pos2.y + "px";
+        var pos3 = getPositionOnScreen(camera, venus);
+        idvenus.style.left = pos3.x + "px";
+        idvenus.style.top = pos3.y + "px";
+        var pos4 = getPositionOnScreen(camera, lune);
+        idlune.style.left = pos4.x + "px";
+        idlune.style.top = pos4.y + "px";
+        var pos5 = getPositionOnScreen(camera, mars);
+        idmars.style.left = pos5.x + "px";
+        idmars.style.top = pos5.y + "px";
+        var pos6 = getPositionOnScreen(camera, jupiter);
+        idjupiter.style.left = pos6.x + "px";
+        idjupiter.style.top = pos6.y + "px";
+        var pos7 = getPositionOnScreen(camera, saturne);
+        idsaturne.style.left = pos7.x + "px";
+        idsaturne.style.top = pos7.y + "px";
 
         soleil.rotateY(.0004);
         groupsoleil.rotateY(speedsoleil);
@@ -356,7 +654,47 @@
         cloudsaturne.rotateZ(.0000001);
 
         renderer.render(scene, camera);
-    });
+
+        requestAnimationFrame(animate);
+        if (window.isBDown) {
+            speedm = speedm * 1.1;
+            speedv = speedv * 1.1;
+            speedt = speedt * 1.1;
+            speedma = speedma * 1.1;
+            speedj = speedj * 1.1;
+            speeds = speeds * 1.1;
+            speedsoleil = speedsoleil * 1.1;
+            speedlune = speedlune * 1.1;
+            groupmercure.rotateY(speedm);
+            groupvenus.rotateY(speedv);
+            groupterre.rotateY(speedt);
+            groupmars.rotateY(speedma);
+            groupjupiter.rotateY(speedj);
+            groupsaturne.rotateY(speeds);
+            groupsaturne.rotateY(speeds);
+            groupsoleil.rotateY(speedsoleil);
+            lune.rotateY(speedlune);
+        }
+        if (window.isVDown) {
+            speedm = speedm * .9;
+            speedv = speedv * .9;
+            speedt = speedt * .9;
+            speedma = speedma * .9;
+            speedj = speedj * .9;
+            speeds = speeds * .9;
+            speedsoleil = speedsoleil * .9;
+            speedlune = speedlune * .9;
+            groupmercure.rotateY(speedm);
+            groupvenus.rotateY(speedv);
+            groupterre.rotateY(speedt);
+            groupmars.rotateY(speedma);
+            groupjupiter.rotateY(speedj);
+            groupsaturne.rotateY(speeds);
+            groupsoleil.rotateY(speedsoleil);
+            lune.rotateY(speedlune);
+        }
+    }
+    requestAnimationFrame(animate);
 </script>
 </body>
 </html>
