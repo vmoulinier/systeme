@@ -4,6 +4,7 @@
     <meta charset=utf-8>
     <title>Système Solaire</title>
     <link rel="icon" href="images/earth-png.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <style>
         body {
             margin: 0;
@@ -158,13 +159,51 @@
     </table>
 </div>
 <div id="idjupiter" class="panneau" style="display: none">
-    Jupiter
+    <h2>Jupiter</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>69 911 km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>778,5 millions km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>-110°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>47 051 km/h</td>
+        </tr>
+    </table>
 </div>
 <div id="idsaturne" class="panneau" style="display: none">
-    Saturne
+    <h2>Saturne</h2>
+    <table>
+        <tr>
+            <td>Rayon</td>
+            <td>58 232 km</td>
+        </tr>
+        <tr>
+            <td>Distance du soleil</td>
+            <td>1,434 milliard km</td>
+        </tr>
+        <tr>
+            <td>Température</td>
+            <td>-191°</td>
+        </tr>
+        <tr>
+            <td>Vitesse de rotation</td>
+            <td>10,183 km/s</td>
+        </tr>
+    </table>
 </div>
-<div class="panneau" id="btn" style="right: 75px; top: 75px;">> Entrer VR <</div>
-<div id="infos" style="top:75px; left: 50px;" class="panneau" >A : accélerer <br /><br />Z : ralentir<br /><br />Echap : quitter la vue</div>
+<button id="btn" class="btn btn-success" style="position: absolute; z-index: 15; top: 50px; left: 340px;">Entrer VR</button>
+<button id="btn2" onmouseup="mouseUpFast()" class="btn btn-success" style="position: absolute; z-index: 15; top : 50px; left: 40px;">Vitesse +</button>
+<button id="btn3" onmouseup="mouseUpSlow()" class="btn btn-info" style="position: absolute; z-index: 15; top : 50px; left: 140px;">Vitesse -</button>
+<button id="btn4" onmouseup="mouseUpEchap()" class="btn btn-primary" style="position: absolute; z-index: 15; top : 50px; left: 240px;">Quit vue</button>
 <script>
     // création du renderer
     var renderer = new THREE.WebGLRenderer();
@@ -423,10 +462,10 @@
 
     spline = new THREE.SplineCurve3([
         new THREE.Vector3(5, 5, 0),
-        new THREE.Vector3(0, 20, -10),
-        new THREE.Vector3(15, 15, -15),
-        new THREE.Vector3(-10, 10, -20),
-        new THREE.Vector3(20, 15, -30),
+        new THREE.Vector3(15, 15, -10),
+        new THREE.Vector3(35, 12, -15),
+        new THREE.Vector3(-15, 8, -20),
+        new THREE.Vector3(30, -5, -30),
         new THREE.Vector3(5, 5, 0)
     ]);
 
@@ -445,13 +484,14 @@
     var start = null;
 
     //event listener
-    window.addEventListener('keydown', handleKeyDown, false);
-    window.addEventListener('keyup', handleKeyUp, false);
     renderer.domElement.addEventListener('click', onMouseClick);
 
     document.getElementById("btn").addEventListener("click", function(){
         btn.style.display = "none";
-        infos.style.display = "none";
+        btn2.style.display = "none";
+        btn3.style.display = "none";
+        btn4.style.display = "none";
+
         renderer.setAnimationLoop( function (t) {
             document.body.appendChild( WEBVR.createButton( renderer ) );
             renderer.vr.enabled = true;
@@ -505,36 +545,57 @@
         return false;
     });
 
-    //accelerer le temps
-    function handleKeyDown(event) {
-        if (event.keyCode === 65) {
-            window.isBDown = true;
-        }
-        if (event.keyCode === 90) {
-            window.isVDown = true;
-        }
-        if (event.keyCode === 27) {
-            scene.add(camera);
-            camera.position.z = 160;
-            camera.position.y = 40;
-            idsoleil.style.display = "none";
-            idmercure.style.display = "none";
-            idvenus.style.display = "none";
-            idterre.style.display = "none";
-            idlune.style.display = "none";
-            idmars.style.display = "none";
-            idjupiter.style.display = "none";
-            idsaturne.style.display = "none";
-        }
+    function mouseUpFast() {
+        speedm = speedm * 1.4;
+        speedv = speedv * 1.4;
+        speedt = speedt * 1.4;
+        speedma = speedma * 1.4;
+        speedj = speedj * 1.4;
+        speeds = speeds * 1.4;
+        speedsoleil = speedsoleil * 1.4;
+        speedlune = speedlune * 1.4;
+        groupmercure.rotateY(speedm);
+        groupvenus.rotateY(speedv);
+        groupterre.rotateY(speedt);
+        groupmars.rotateY(speedma);
+        groupjupiter.rotateY(speedj);
+        groupsaturne.rotateY(speeds);
+        groupsaturne.rotateY(speeds);
+        groupsoleil.rotateY(speedsoleil);
+        lune.rotateY(speedlune);
     }
 
-    function handleKeyUp(event) {
-        if (event.keyCode === 65) {
-            window.isBDown = false;
-        }
-        if (event.keyCode === 90) {
-            window.isVDown = false;
-        }
+    function mouseUpSlow() {
+        speedm = speedm * .7;
+        speedv = speedv * .7;
+        speedt = speedt * .7;
+        speedma = speedma * .7;
+        speedj = speedj * .7;
+        speeds = speeds * .7;
+        speedsoleil = speedsoleil * .7;
+        speedlune = speedlune * .7;
+        groupmercure.rotateY(speedm);
+        groupvenus.rotateY(speedv);
+        groupterre.rotateY(speedt);
+        groupmars.rotateY(speedma);
+        groupjupiter.rotateY(speedj);
+        groupsaturne.rotateY(speeds);
+        groupsoleil.rotateY(speedsoleil);
+        lune.rotateY(speedlune);
+    }
+    
+    function mouseUpEchap() {
+        scene.add(camera);
+        camera.position.z = 120;
+        camera.position.y = 40;
+        idsoleil.style.display = "none";
+        idmercure.style.display = "none";
+        idvenus.style.display = "none";
+        idterre.style.display = "none";
+        idlune.style.display = "none";
+        idmars.style.display = "none";
+        idjupiter.style.display = "none";
+        idsaturne.style.display = "none";
     }
 
     function onMouseClick(event) {
@@ -574,7 +635,7 @@
         }
     }
 
-    camera.position.z = 160;
+    camera.position.z = 120;
     camera.position.y = 40;
 
     function animate() {
@@ -656,43 +717,6 @@
         renderer.render(scene, camera);
 
         requestAnimationFrame(animate);
-        if (window.isBDown) {
-            speedm = speedm * 1.1;
-            speedv = speedv * 1.1;
-            speedt = speedt * 1.1;
-            speedma = speedma * 1.1;
-            speedj = speedj * 1.1;
-            speeds = speeds * 1.1;
-            speedsoleil = speedsoleil * 1.1;
-            speedlune = speedlune * 1.1;
-            groupmercure.rotateY(speedm);
-            groupvenus.rotateY(speedv);
-            groupterre.rotateY(speedt);
-            groupmars.rotateY(speedma);
-            groupjupiter.rotateY(speedj);
-            groupsaturne.rotateY(speeds);
-            groupsaturne.rotateY(speeds);
-            groupsoleil.rotateY(speedsoleil);
-            lune.rotateY(speedlune);
-        }
-        if (window.isVDown) {
-            speedm = speedm * .9;
-            speedv = speedv * .9;
-            speedt = speedt * .9;
-            speedma = speedma * .9;
-            speedj = speedj * .9;
-            speeds = speeds * .9;
-            speedsoleil = speedsoleil * .9;
-            speedlune = speedlune * .9;
-            groupmercure.rotateY(speedm);
-            groupvenus.rotateY(speedv);
-            groupterre.rotateY(speedt);
-            groupmars.rotateY(speedma);
-            groupjupiter.rotateY(speedj);
-            groupsaturne.rotateY(speeds);
-            groupsoleil.rotateY(speedsoleil);
-            lune.rotateY(speedlune);
-        }
     }
     requestAnimationFrame(animate);
 </script>
